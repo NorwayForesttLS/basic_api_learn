@@ -1,0 +1,16 @@
+services:
+  api_basics:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api_basics_app
+    
+    env_file:
+      - .env
+
+
+    volumes:
+      - ./src:/app/src
+      - ./reports:/app/reports
+
+    restart: unless-stopped

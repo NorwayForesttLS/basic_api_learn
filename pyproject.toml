@@ -9,10 +9,12 @@ authors = [
 requires-python = ">=3.14"
 dependencies = [
     "binance>=0.3.146",
+    "cryptography>=50.0.2",
     "dotenv>=0.9.9",
     "fastapi>=0.143.0",
     "openai>=3.27.0",
     "pydantic>=2.14.0",
+    "cryptography",  # ← добавь сюда
     "python-binance>=1.0.37",
 ]
 
