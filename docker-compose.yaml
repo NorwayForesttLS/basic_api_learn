@@ -12,5 +12,3 @@ services:
     volumes:
       - ./src:/app/src
       - ./reports:/app/reports
-
-    restart: unless-stopped
