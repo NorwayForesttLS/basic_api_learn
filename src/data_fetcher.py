@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 import time
 from clients.binance_client import binance_client
@@ -23,6 +24,23 @@ def get_daily_prices(symbol: str = "BTCUSDT") -> list[dict]:
         candle["Open time"] = datetime.fromtimestamp(open_time_sec).strftime('%Y-%m-%d %H:%M:%S')
         candle["Close time"] = datetime.fromtimestamp(close_time_sec).strftime('%Y-%m-%d %H:%M:%S')
     return prices_per_day
+#data model : print(json.dumps(get_daily_prices(),indent=2))
 
+
+
+def levels_calc(candles: list[dict]):
+    candles = candles
+    all_highs = [float(c["High"]) for c in candles]
+    day_high = max(all_highs)
+    all_lows = [float(c["Low"]) for c in candles]
+    day_low = min(all_lows)
+    day_close = float(candles[-1]["Close"])
+
+    p = round(((day_high + day_low + day_close) / 3),3)
+
+    resistance_level = round(((2 * p) - day_low),3)
+    support_level = round(((2 * p) - day_high),3)
+
+    return {"p":p,"resistance_level":resistance_level,"support_level":support_level}
 
 

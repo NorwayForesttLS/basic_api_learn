@@ -1,6 +1,6 @@
 from models import *
 from clients.openai_client import *
-from data_fetcher import get_daily_prices
+from data_fetcher import get_daily_prices,levels_calc
 from utils.report import save_report
 from pathlib import Path
 
@@ -28,15 +28,17 @@ def main():
     print(f"Запуск анализа {target_coin}")
     candles = get_daily_prices(symbol=target_coin)
 
+    levels = levels_calc(candles)
 
     request = PricingRequest(
         coin=target_coin,
         timeframe="1d",
         topic="Поиск среднесрочной сделки на основе 24ч свечей",
         comments=[
-            f"Вот свечи за сутки: {candles}. "
-            "Определи текущий тренд, уровни поддержки/сопротивления, "
-            "найди точку входа с RR > 3.0 и опиши ключевые риски."
+            f"Текущие свечи: {candles}. "
+            f"Математические уровни: Pivot: ${levels['p']}, "
+            f"Поддержка: ${levels['support_level']}, Сопротивление: ${levels['resistance_level']}. "
+            "Используй эти уровни для обоснования точки входа с RR > 3.0 и опиши риски."
         ],
     )
 
