@@ -22,5 +22,3 @@ def health_connectivity():
         return json.dumps(f'healthy {timestamp}'
                           ,indent=2)
 
-while True:
-    print(health_connectivity())

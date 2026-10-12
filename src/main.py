@@ -1,6 +1,7 @@
 from models import *
 from clients.openai_client import *
 from data_fetcher import get_daily_prices
+from utils.report import save_report
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -19,6 +20,7 @@ def get_pricing_report(request: PricingRequest) -> PricingReport:
         response_format=PricingReport
     )
     return response.choices[0].message.parsed
+
 
 
 def main():
@@ -54,6 +56,9 @@ def main():
     print(f"💡 Рекомендация: {report.recommendation.upper()}")
     print(f"⚠️ Риски: {', '.join(report.risks)}")
     print("=" * 50)
+
+    save_report(report,target_coin)
+
 
 if __name__ == "__main__":
     main()

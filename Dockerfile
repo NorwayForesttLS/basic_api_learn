@@ -14,4 +14,4 @@ COPY src/ ./src/
 
 ENV PYTHONPATH="/app/src"
 
-CMD ["python", "src/main.py"]
+CMD ["python", "src/utils/runner.py"]
