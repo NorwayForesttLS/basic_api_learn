@@ -5,6 +5,7 @@ from datetime import datetime
 import time
 from clients.binance_client import binance_client
 
+
 keys = ["Open time","Open","High","Low","Close","Volume","Close time",
         "Quote asset volume"]
 
@@ -25,6 +26,7 @@ def get_historical_prices(symbol: str = "BTCUSDT",interval: str = "1h") -> list[
         candle["Low"] = float(candle["Low"])
         candle["Close"] = float(candle["Close"])
     return prices_per_day
+
 
 def rsi_calc(candles: list[dict],period=14):
     deltas = []
@@ -62,8 +64,6 @@ def rsi_calc(candles: list[dict],period=14):
 
 candles = get_historical_prices("ETHUSDT",interval="1h")
 candles = rsi_calc(candles)
-
-for c in candles:
-    print(f"Время: {c['Close time']} | Цена: {c['Close']} | RSI: {c['rsi']}")
-
-#print(rsi_calc(get_historical_prices()))#get_historical_prices(),indent=2)
+#print(candles)
+# for c in candles:
+#     print(f"Время: {c['Close time']} | Цена: {c['Close']} | RSI: {c['rsi']}")
