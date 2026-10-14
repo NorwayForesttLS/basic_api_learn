@@ -1,45 +1,38 @@
 from indicators.rsi import rsi_calc,get_historical_prices
+from models.models import Wallet
 
 candles = get_historical_prices("ETHUSDT",interval="1h")
 
 data = rsi_calc(candles)
 
 
-def run_backtest(candles: list[dict]):
+def run_backtest(candles: list[dict]) -> Wallet:
+    wallet = Wallet()
     in_position = False
-    trade_size = 100
-    crypto_amount = 0.0
-    initial_balance = 1000.0
-    balance = initial_balance
-    trades = []
 
     for i in range(1, len(candles)):
         prev_candle = candles[i - 1]
         curr_candle = candles[i]
+
+
         if not in_position:
             if prev_candle['rsi'] is not None and prev_candle["rsi"] <= 30 and curr_candle["rsi"] > 30:
-                buy_price = curr_candle["Close"]
-                crypto_amount = trade_size / buy_price
+                wallet.buy(curr_candle["Close"],amount_usdt=100.0)
                 in_position = True
-                print(f"КУПИЛИ по цене: {buy_price} (RSI: {curr_candle['rsi']})")
+
+                print(f"КУПИЛИ по цене: {curr_candle["Close"]} (Баланс: ${round(wallet.balance,2)})")
         else:
             if curr_candle["rsi"] >= 50:
-                sell_price = curr_candle["Close"]
-                payout = crypto_amount * sell_price
-                profit_usd = payout - trade_size
-                balance = balance + profit_usd
+                wallet.sell(curr_candle["Close"])
 
-                profit = ((sell_price - buy_price) / buy_price * 100)
-                trades.append(profit)
-
-                print(f"ПРОДАЛИ по цене: {sell_price} (Прибыль: {round(profit, 2)}%)")
+                print(f"ПРОДАЛИ по цене: {curr_candle["Close"]} | (Баланс: {round(wallet.balance, 2)}%)")
                 in_position = False
-    return trades,balance
+    return wallet
 
 # Запускаем симуляцию на подготовленных данных:
-my_trades,final_balance = run_backtest(data)
+wallet = run_backtest(data)
 
-print(f"Всего сделок: {len(my_trades)}")
-print(f"Список сделок (% прибыли): {my_trades}")
-print(f"Финальный баланс: ${round(final_balance, 2)}")
-print(f"Чистая прибыль: ${round(final_balance - 1000.0, 2)}")
+print(f"Всего сделок: {len(wallet.trades)}")
+print(f"Список сделок (% прибыли): {wallet.trades}")
+print(f"Финальный баланс: ${round(wallet.balance, 2)}")
+print(f"Чистая прибыль: ${round(wallet.balance - 1000.0, 2)}")
